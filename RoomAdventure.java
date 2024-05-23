@@ -20,6 +20,17 @@ public class RoomAdventure {
     private static boolean badReception = false;    //not used in the current version of the game but will be eventually
     private static Scanner scanner = new Scanner(System.in);
 
+    //rooms
+    private static Room orchard;
+    private static Room crossroads;
+    private static Room forestEdge;
+    private static Room deepForest;
+    private static Room longRoad;
+    private static Room graveyard;
+    private static Room brewery;
+    private static Room barn;
+    private static Room farmhouse;
+
     private static boolean playing = true;
 
     final private static String DEFAULT_STATUS = "Sorry, I don't understand. Try something like [verb] [noun],\n or type 'help' if you need  more specifics.";
@@ -164,6 +175,7 @@ public class RoomAdventure {
                     default:
                         currentRoom = exit.destination;
                         handleDescribeArea();
+                        break;
                 }
             }
         }
@@ -175,18 +187,20 @@ public class RoomAdventure {
         Item[] items = currentRoom.getItems();
         status = "I don't see that item.";
         for (int i = 0; i < items.length; i++){
-            if (noun.equals(items[i].name)){
-                //describe item to player
-                status = items[i].description;
-
-                //allow player the option to sleep if bed is selected
-                if(noun.equals("bed")){
-                    status += "Should I take a nap? Just type y or n, it will be faster.";
-                    String response = scanner.nextLine();
-                    if(response.equals("y") || response.equals("yes")){
-                        sleep();
+            if (items[i] != null){
+                if (noun.equals(items[i].name)){
+                    //describe item to player
+                    status = items[i].description;
+    
+                    //allow player the option to sleep if bed is selected
+                    if(noun.equals("bed")){
+                        System.out.println("Should I take a nap? Just type y or n, it will be faster.");
+                        String response = scanner.nextLine();
+                        if(response.equals("y") || response.equals("yes")){
+                            sleep();
+                        }
                     }
-                }
+                }   
             }
         }
     }
@@ -201,17 +215,19 @@ public class RoomAdventure {
 
             Item item = items[i];
 
-            if (noun.equals(item.name) && item.grabbable == true){
-                status = "My bag is already full";
-
-                for (int j = 0; j < MAX_INVENTORY_SIZE; j++){
-
-                    if (inventory[j] == null){
-
-                        inventory[j] = item;
-                        status = "I picked up the " + noun + ".";
-                        currentRoom.items[i] = null;
-                        break;
+            if(item != null){
+                if (noun.equals(item.name) && item.grabbable == true){
+                    status = "My bag is already full";
+    
+                    for (int j = 0; j < MAX_INVENTORY_SIZE; j++){
+    
+                        if (inventory[j] == null){
+    
+                            inventory[j] = item;
+                            status = "I picked up the " + noun + ".";
+                            currentRoom.items[i] = null;
+                            break;
+                        }
                     }
                 }
             }
@@ -238,9 +254,11 @@ public class RoomAdventure {
         boolean hasItem = false;
 
         for (Item item : inventory) {
-            if(item.name == noun){
-                hasItem = true;
-            }
+            if(item != null){
+                if(item.name == noun){
+                    hasItem = true;
+                }
+            } 
         }
 
         if(hasItem){        
@@ -389,15 +407,15 @@ public class RoomAdventure {
         timeOfDay = "dawn";
 
         //create rooms
-        Room orchard = new Room("Orchard");
-        Room graveyard = new Room("Graveyard");
-        Room crossroads = new Room("Crossroads");
-        Room forestEdge = new Room("Forest Edge");
-        Room deepForest = new Room("Deep Forest");
-        Room barn = new Room("Barn");
-        Room farmhouse = new Room("Farmhouse");
-        Room longRoad = new Room("Long Road");
-        Room brewery = new Room("Brewery");
+        orchard = new Room("Orchard");
+        graveyard = new Room("Graveyard");
+        crossroads = new Room("Crossroads");
+        forestEdge = new Room("Forest Edge");
+        deepForest = new Room("Deep Forest");
+        barn = new Room("Barn");
+        farmhouse = new Room("Farmhouse");
+        longRoad = new Room("Long Road");
+        brewery = new Room("Brewery");
 
         /* To be implemented later, once bare minimum is done 
          * Room ciderStand = new Room("Cider Stand");
@@ -450,7 +468,7 @@ public class RoomAdventure {
         
         //create items
         Item stopSign = new Item("stopSign");
-        swing.setDescription("There's a slightly bent stop sign in the corner.");
+        stopSign.setDescription("There's a slightly bent stop sign in the corner.");
 
         Item flowers = new Item("flowers");
         flowers.setDescription("There's a bunch of really pretty light orange coneflowers growing by the edge of the road.");
@@ -500,7 +518,7 @@ public class RoomAdventure {
         forestEdge.setItems(forestEdgeItems);
 
         //create exits
-        Exit forestToCrossroads = new Exit("east", barn);
+        Exit forestToCrossroads = new Exit("east", crossroads);
         forestToCrossroads.setPreview("Back to the crossroads.");
 
         Exit toDeepForest = new Exit("west", deepForest);
@@ -525,6 +543,9 @@ public class RoomAdventure {
         crow.setDialogue(crowDialogue);
         crow.setKnown(true);
 
+        Character[] forestEdgeCharacters = {crow};
+        forestEdge.setCharacters(forestEdgeCharacters);
+
 
         // Setup deep forest
 
@@ -544,6 +565,7 @@ public class RoomAdventure {
 
         Item shovel = new Item("shovel");
         shovel.setDescription("It's a small shovel. In a graveyard. I really hope whoever left\nit here was just planting flowers with it.");
+        shovel.setGrabbable(true);
 
         Item paperScrap = new Item("paperScrap");
         paperScrap.setDescription("A torn, water-stained piece of paper is lying on the ground by a\nheadstone. Written on it in shaky handwriting is 'When thoughts   \r\n" + //
@@ -556,13 +578,13 @@ public class RoomAdventure {
                         "To Nature’s teachings'");
         paperScrap.setGrabbable(true);
 
-        Item[] graveyardItems = {bikeRack, bike, oldTree, paperScrap};
+        Item[] graveyardItems = {bikeRack, bike, oldTree, paperScrap, shovel};
 
         graveyard.setItems(graveyardItems);
 
         //create exits
         Exit graveyardToCrossroads = new Exit("north", crossroads);
-        toCrossroads.setPreview("That would take me back to the crossroads.");
+        graveyardToCrossroads.setPreview("That would take me back to the crossroads.");
 
         Exit [] graveyardExits = {graveyardToCrossroads};
         graveyard.setExits(graveyardExits);
@@ -629,9 +651,13 @@ public class RoomAdventure {
         cat.setDialogue(catDialogue);
         cat.setKnown(true);
 
+        Character[] barnCharacters = {cat};
+        barn.setCharacters(barnCharacters);
+
+
 
         // Setup brewery
-        brewery.setDescription("A brewery? I wonder if the orchard sells hard cider or something. Oh hey! there's a person here. He's wearing something that looks like a hazmat suit... or maybe a beekeeper suit?");
+        brewery.setDescription("A brewery? I wonder if the orchard sells hard cider or something. Oh hey! there's a person here.\nHe's wearing something that looks like a hazmat suit... or maybe a beekeeper suit?");
         
         //create items
         Item ciderPress = new Item("ciderPress");
@@ -659,7 +685,7 @@ public class RoomAdventure {
 
         //create exits
 
-        Exit breweryToOrchard = new Exit("south", barn);
+        Exit breweryToOrchard = new Exit("south", orchard);
         breweryToOrchard.setPreview("Back to the orchard again.");
 
         Exit [] breweryExits = {breweryToOrchard};
@@ -679,6 +705,8 @@ public class RoomAdventure {
 
         clive.setDialogue(cliveDialogue);
 
+        Character[] breweryCharacters = {clive};
+        brewery.setCharacters(breweryCharacters);
 
 
         // Setup farmhouse
@@ -736,9 +764,13 @@ public class RoomAdventure {
 
         marge.setDialogue(margeDialogue);
 
+        Character[] farmhouseCharacters = {marge};
+        farmhouse.setCharacters(farmhouseCharacters);
+
+
         String intro = "*static* Can you hear me? I think we lost connection for a little bit.\n";
         intro += "anyways, I found something weird. Our map said the forest went on for nearly 10 miles\n";
-        intro += "inevery direction, but I've only been walking for an hour and I found a road.\n";
+        intro += "in every direction, but I've only been walking for an hour and I already found a road.\n";
         intro += "It looked like it was falling apart at first, but after I followed it for a bit\n";
         intro += "it seemed pretty well maintained, and the trees started thinning out too.\n";
         intro += "I'm out of the forest completely now. I wish you could have come exploring with me,\n";
@@ -774,28 +806,28 @@ public class RoomAdventure {
 
     private static void changeTime(){
         //adjust current time block as appropriate
+        switch(timeOfDay){
 
-        if (timeOfDay == "dawn"){
-            timeOfDay = "midday";
-            status += "\nI think the sun is fully up now.";
-        }
+            case "dawn":
+                timeOfDay = "midday";
+                status += "\nI think the sun is fully up now.";
+                break;
 
-        if (timeOfDay == "midday"){
-            timeOfDay = "dusk";
-            status += "\nIt's starting to get dark.";
+            case "midday":
+                timeOfDay = "dusk";
+                status += "\nIt's starting to get dark.";
+                break;
 
-        }
+            case "dusk":
+                timeOfDay = "night";
+                status += "It's definitely nighttime now";
+                break;
 
-        if (timeOfDay == "dusk"){
-            timeOfDay = "night";
-            status += "\nIt's definitely nighttime now.";
-
-        }
-
-        if (timeOfDay == "night"){
-            timeOfDay = "dawn";
-            status += "\nThe sun is finally starting to rise.";
-            daysPassed ++;
+            case "night":
+                timeOfDay = "dawn";
+                status += "\nThe sun is finally starting to rise.";
+                daysPassed ++;
+                break;
         }
 
         startTime = Instant.now();
