@@ -35,7 +35,7 @@ public class RoomAdventure {
 
     final private static String DEFAULT_STATUS = "Sorry, I don't understand. Try something like [verb] [noun],\n or type 'help' if you need  more specifics.";
     final private static int MAX_INVENTORY_SIZE = 6;
-    final private static long TIME_BLOCK_LENGTH = 5; //in minutes
+    final private static long TIME_BLOCK_LENGTH = 4; //in minutes
 
 
     public static void main(String[] args){
@@ -48,57 +48,66 @@ public class RoomAdventure {
             // take input
             String input = scanner.nextLine(); // wait here for input
 
-            if (input == "help"){
+            // process input
+
+            //single-word commands
+            if (input.equals("help")){
                 handleHelp();
             }
 
-            // process input
-            String[] words = input.split(" ");
-
-            if (words.length != 2){
-                status = DEFAULT_STATUS;
-            }
-
+            //multi-word commands
             else{
-                String verb = words[0];
-                String noun = words[1];
+                String[] words = input.split(" ");
     
-                switch (verb){
+                if (words.length != 2){
+                    status = DEFAULT_STATUS;
+                }
     
-                    case "go":
-                        handleGo(noun);
-                        break;
+                else{
+                    String verb = words[0];
+                    String noun = words[1];
+        
+                    switch (verb){
+        
+                        case "go":
+                            handleGo(noun);
+                            break;
+        
+                        case "look":
+                            handleLook(noun);
+                            break;
+        
+                        case "take":
+                            handleTake(noun);
+                            break;
+        
+                        // case "drop":
+                        //     handleDrop(noun);
+                        //     break;
+        
+                        case "use":
+                            handleUse(noun);
+                            break;
+        
+                        case "talk":
+                            handleTalk(noun);
+                            break;
+        
+                        case "list":
+                            handleListInventory();
+                            break;
+        
+                        case "describe":
+                            handleDescribeArea();
+                            break;
     
-                    case "look":
-                        handleLook(noun);
-                        break;
-    
-                    case "take":
-                        handleTake(noun);
-                        break;
-    
-                    // case "drop":
-                    //     handleDrop(noun);
-                    //     break;
-    
-                    case "use":
-                        handleUse(noun);
-                        break;
-    
-                    case "talk":
-                        handleTalk(noun);
-                        break;
-    
-                    case "list":
-                        handleListInventory();
-                        break;
-    
-                    case "describe":
-                        handleDescribeArea();
-                        break;
-    
-                    default: status = DEFAULT_STATUS;
-                }    
+                        case "listen":
+                            handleListen();
+                            break;
+        
+                        default: status = DEFAULT_STATUS;
+                    }    
+                }
             }
 
             if (paranoid == true){
@@ -255,7 +264,7 @@ public class RoomAdventure {
 
         for (Item item : inventory) {
             if(item != null){
-                if(item.name == noun){
+                if(item.name.equals(noun)){
                     hasItem = true;
                 }
             } 
@@ -269,10 +278,10 @@ public class RoomAdventure {
                     break;
                 
                 case "shovel":
-                    if(currentRoom.name == "crossroads"){
+                    if(currentRoom.name.equals("crossroads")){
                         status = "I can use the shovel to dig up that weird shiny thing.\nIt's a tin full of batteries";
                         for (Item item : currentRoom.items) {
-                            if(item.name == "shiny"){
+                            if(item.name.equals("shiny")){
                                 item.name = "batteries";
                                 handleTake("batteries");
                                 item = null;
@@ -284,7 +293,7 @@ public class RoomAdventure {
 
                 case "batteries":
                     for (Item item : inventory) {
-                        if(item.name == "radio"){
+                        if(item.name.equals("radio")){
                             for (Item item1 : inventory) {
                                 if(item1.name == "batteries"){
                                     status = "I put fresh batteries in the radio, hopefully it works now.";
@@ -307,6 +316,21 @@ public class RoomAdventure {
                     }
 
                     break;
+
+                case "lockpicks":
+                    
+                    if(currentRoom.name.equals("graveyard")){
+                        for(Item item : inventory){
+                            if(item.name.equals("crumpledPaper")){
+                                status = "I got the bike unlocked!";
+                                hasBike = true;
+                            }
+                            else{
+                                status = "I don't know how to use these...";
+                            }
+                        }
+                    }
+                    
 
                 default:
                     status = "Um... not really sure how I could use that here.";
@@ -794,7 +818,7 @@ public class RoomAdventure {
         Instant now = Instant.now();
         Duration timeElapsed = Duration.between(startTime, now);
         long timeElapsedMinutes = timeElapsed.toMinutes();
-        if (timeElapsedMinutes == TIME_BLOCK_LENGTH){
+        if (timeElapsedMinutes >= TIME_BLOCK_LENGTH){
             changeTime();
         }
 
