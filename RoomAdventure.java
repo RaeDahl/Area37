@@ -424,20 +424,20 @@ public class RoomAdventure {
 
     private static void handleListen(){
         //listen to radio
-        String radioLine0 = "*Static*";//
+        String radioLine0 = "*Static*";//14%
         String radioLine1 = "12 18 14\t12 16 7\t19 18 6 1\t21 16 19\t13 2 2 3\n18 1 10 15 1 2 7 7 26 3 15 8 *static*";//4.7%
         String radioLine2 = "The weather forecast for tomorrow is *static* with moderate winds and temperatures of 55-67 degrees *static*"; //12%
         String radioLine3 = "*static* ple *static* please *static* he l p u s *click*"; //2.4%
-        String radioLine4 = "*static* Wake up."; //4.7%
+        String radioLine4 = "*static* Wake up."; //2.4%
         String radioLine5 = "Huh. I don't think it's working.";//7%
         String radioLine6 = "do do do doo, *static* do do do do do doo, do do do do do doo-ooo-oo. *static*"; //12%
-        String radioLine7 = "Never gonna give you up, never let you down, never gonna run around and desert you\nNever gonna make you cry, never gonna say goodbye, never gonna tell a lie, and hurt you."; //12%
+        String radioLine7 = "Never gonna give you up, never let you down, never gonna run around and desert you\nNever gonna make you cry, never gonna say goodbye, never gonna tell a lie, and hurt you."; //14%
         String radioLine8 = "Public Safety Announcements: Do not go to the graveyard at night or into the forest at dusk.\nIf the payphone in town rings, do not answer it. Do not attempt to explore the radio tower alone,\nand stay away from the abandoned cereal factory.";//12%
         String radioLine9 = "6 10 21 16 5 2 7\t18 3\t2 22 10 2 1 26 4 2 3 5\t7 5 16 5 6 7 *static* *crackle";//4.7%
         String radioLine10 = "So tell us a bit more about your secret to growing those bea*static*utiful sunflowers. Well, it takes a lo*static*t of work Mr. Oddwheel*crackle*. Keeping them watered, making sure they get enou*static*gh sun and don't have bu*crackle*gs, bl*static*ood sacri*crackle*fices.*crackle*";//9.5%
         String radioLine11 = "do do dooo! Tired of interesting breakfasts? *crackle* mix things up with the\nworld's most generic, boring, and totally not sentient and evil cereal brand, Cheeri Tori!";//7%
 
-        String[] radioOptions = {radioLine3, radioLine4, radioLine4, radioLine9, radioLine9, radioLine11, radioLine11, radioLine1, radioLine1, radioLine5, radioLine5, radioLine5, radioLine10, radioLine10, radioLine10, radioLine10, radioLine0, radioLine0, radioLine0, radioLine0, radioLine0, radioLine2, radioLine2, radioLine2, radioLine2, radioLine2, radioLine6, radioLine6, radioLine6, radioLine6, radioLine6, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine8, radioLine8, radioLine8, radioLine8, radioLine8};
+        String[] radioOptions = {radioLine3, radioLine4, radioLine9, radioLine9, radioLine11, radioLine11, radioLine1, radioLine1, radioLine5, radioLine5, radioLine5, radioLine10, radioLine10, radioLine10, radioLine10, radioLine0, radioLine0, radioLine0, radioLine0, radioLine0, radioLine0, radioLine2, radioLine2, radioLine2, radioLine2, radioLine2, radioLine6, radioLine6, radioLine6, radioLine6, radioLine6, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine8, radioLine8, radioLine8, radioLine8, radioLine8};
         Random random = new Random();
         String output = radioOptions[random.nextInt(radioOptions.length)];
 
