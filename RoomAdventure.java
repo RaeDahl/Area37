@@ -111,7 +111,7 @@ public class RoomAdventure {
             }
 
             if (paranoid == true){
-                status += "I can't shake the feeling that someone is following me, but every time I check there's nothing there.";
+                status += "\nI can't shake the feeling that someone is following me, but every time I check there's nothing there.";
             }
 
             checkTime();
@@ -126,10 +126,12 @@ public class RoomAdventure {
         Exit[] exits = currentRoom.getExits();
         status = "I don't see that exit.";
         for (Exit exit : exits){
+
             if (noun.equals(exit.direction)){
 
                 switch(exit.destination.name){
-                    case("deep forest"):
+                    case("Deep Forest"):
+                        System.out.println("I'm going in to the forest now");
                         switch(timeOfDay){
 
                             case "night":
@@ -154,7 +156,7 @@ public class RoomAdventure {
                         break;
 
 
-                    case("long road"):
+                    case("Long Road"):
 
                         if(hasBike){
                             endGame("finishedDemo");
@@ -168,10 +170,15 @@ public class RoomAdventure {
                         break;
 
 
-                    case("graveyard"):
+                    case("Graveyard"):
 
                         if(paranoid){
                             status = "That's where the feeling of being watched started, so I don't really want to go back there yet.";
+                        }
+
+                        else if(timeOfDay.equals("night")){
+                            status = "Something- something's wrong here. I have to get out of this place!\n";
+                            paranoid = true;
                         }
 
                         else{
@@ -270,7 +277,7 @@ public class RoomAdventure {
             } 
         }
 
-        if(hasItem){        
+        if(hasItem){
             switch(noun){
                 
                 case "radio":
@@ -278,13 +285,17 @@ public class RoomAdventure {
                     break;
                 
                 case "shovel":
-                    if(currentRoom.name.equals("crossroads")){
-                        status = "I can use the shovel to dig up that weird shiny thing.\nIt's a tin full of batteries";
-                        for (Item item : currentRoom.items) {
-                            if(item.name.equals("shiny")){
-                                item.name = "batteries";
+
+                    status = "Um... not really sure how I could use that here.";
+
+                    if(currentRoom.name.equals("Crossroads")){
+                        System.out.println("I can use the shovel to dig up that weird shiny thing.\nIt's a tin full of batteries");
+                        for (int i = 0; i < crossroads.items.length; i++) {
+                            if(crossroads.items[i].name.equals("shiny")){
+                                crossroads.items[i].name = "batteries";
+                                crossroads.items[i].setGrabbable(true);
                                 handleTake("batteries");
-                                item = null;
+                                crossroads.items[i] = null;
                             }
                         }
                     }
@@ -293,16 +304,21 @@ public class RoomAdventure {
 
                 case "batteries":
                     for (Item item : inventory) {
-                        if(item.name.equals("radio")){
-                            for (Item item1 : inventory) {
-                                if(item1.name == "batteries"){
+                        if(item != null){if(item.name.equals("handheldRadio")){
+                            for (int i = 0; i < inventory.length; i++) {
+                                if(inventory[i] != null && inventory[i].name == "batteries"){
                                     status = "I put fresh batteries in the radio, hopefully it works now.";
-                                    item1 = null;
+                                    inventory[i] = null;
                                     hasRadio = true;
                                 }
                             }
                         }
-                    }
+
+                        else{
+                            status = "Um... not really sure how I could use that here.";
+                        }
+                    }   
+                }
                     
                     break;
 
@@ -319,25 +335,31 @@ public class RoomAdventure {
 
                 case "lockpicks":
                     
-                    if(currentRoom.name.equals("graveyard")){
+                    if(currentRoom.name.equals("Graveyard")){
                         for(Item item : inventory){
-                            if(item.name.equals("crumpledPaper")){
+                            if(item != null && item.name.equals("crumpledPaper")){
                                 status = "I got the bike unlocked!";
                                 hasBike = true;
+                                break;
                             }
                             else{
                                 status = "I don't know how to use these...";
                             }
                         }
                     }
+
+                    break;
                     
 
                 default:
                     status = "Um... not really sure how I could use that here.";
+
+            }
         }
-}
 
-
+        else{
+            status = "I don't have anything like that I can use";
+        }
     }
 
     private static void handleHelp(){
@@ -402,8 +424,8 @@ public class RoomAdventure {
 
     private static void handleListen(){
         //listen to radio
-        String radioLine0 = "*Static*";
-        String radioLine1 = "12 18 14\t12 16 7\t19 18 6 1\t21 16 19\t13 2 2 3\n18 1 10 15 1 2 7 7 26 3 15 8 *static*";//7%
+        String radioLine0 = "*Static*";//
+        String radioLine1 = "12 18 14\t12 16 7\t19 18 6 1\t21 16 19\t13 2 2 3\n18 1 10 15 1 2 7 7 26 3 15 8 *static*";//4.7%
         String radioLine2 = "The weather forecast for tomorrow is *static* with moderate winds and temperatures of 55-67 degrees *static*"; //12%
         String radioLine3 = "*static* ple *static* please *static* he l p u s *click*"; //2.4%
         String radioLine4 = "*static* Wake up."; //4.7%
@@ -415,7 +437,7 @@ public class RoomAdventure {
         String radioLine10 = "So tell us a bit more about your secret to growing those bea*static*utiful sunflowers. Well, it takes a lo*static*t of work Mr. Oddwheel*crackle*. Keeping them watered, making sure they get enou*static*gh sun and don't have bu*crackle*gs, bl*static*ood sacri*crackle*fices.*crackle*";//9.5%
         String radioLine11 = "do do dooo! Tired of interesting breakfasts? *crackle* mix things up with the\nworld's most generic, boring, and totally not sentient and evil cereal brand, Cheeri Tori!";//7%
 
-        String[] radioOptions = {radioLine3, radioLine4, radioLine4, radioLine9, radioLine9, radioLine11, radioLine11, radioLine1, radioLine1, radioLine1, radioLine5, radioLine5, radioLine5, radioLine10, radioLine10, radioLine10, radioLine10, radioLine0, radioLine0, radioLine0, radioLine0, radioLine0, radioLine2, radioLine2, radioLine2, radioLine2, radioLine2, radioLine6, radioLine6, radioLine6, radioLine6, radioLine6, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine8, radioLine8, radioLine8, radioLine8, radioLine8};
+        String[] radioOptions = {radioLine3, radioLine4, radioLine4, radioLine9, radioLine9, radioLine11, radioLine11, radioLine1, radioLine1, radioLine5, radioLine5, radioLine5, radioLine10, radioLine10, radioLine10, radioLine10, radioLine0, radioLine0, radioLine0, radioLine0, radioLine0, radioLine2, radioLine2, radioLine2, radioLine2, radioLine2, radioLine6, radioLine6, radioLine6, radioLine6, radioLine6, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine7, radioLine8, radioLine8, radioLine8, radioLine8, radioLine8};
         Random random = new Random();
         String output = radioOptions[random.nextInt(radioOptions.length)];
 
@@ -898,8 +920,10 @@ public class RoomAdventure {
 
             default:
                 result = "Not Implemented";
+
         }
 
+        status = "...";
         System.out.println(result);
         scanner.close();
         playing = false;
