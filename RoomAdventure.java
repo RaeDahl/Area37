@@ -329,6 +329,7 @@ public class RoomAdventure {
                     }
                     else{
                         status = "I lit the candle.";
+                        candleLit = true;
                     }
 
                     break;
